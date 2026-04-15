@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MatchPulse — Futsal Analytics</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00e5a0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MatchPulse">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="setup-screen" class="screen">
+        <div class="setup-container">
+            <div class="brand-header">
+                <div class="brand-logo">
+                    <img src="icon.svg" class="brand-icon" alt="MatchPulse" width="40" height="40">
+                    <div class="brand-text">
+                        <span class="brand-name">MatchPulse</span>
+                        <span class="brand-sub">Futsal Analytics</span>
+                    </div>
+                </div>
+            </div>
+            <div class="config-card">
+                <div class="config-teams">
+                    <div class="team-config">
+                        <div class="team-config-crest">
+                            <img src="https://losyebenesfs.com/assets/images/escudo_yebenes.webp" alt="Escudo" class="crest-img">
+                        </div>
+                        <label class="field-label">Mi equipo</label>
+                        <input type="text" id="my-team-name" value="Los Yébenes FS" placeholder="Nombre de mi equipo" class="field-input">
+                    </div>
+                    <div class="vs-divider">
+                        <button id="btn-home-away" class="btn-home-away" type="button" title="Cambiar local/visitante">
+                            <span class="ha-label">LOCAL</span>
+                            <svg class="ha-arrows" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="7 3 3 7 7 11"/><polyline points="17 13 21 17 17 21"/><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+                        </button>
+                    </div>
+                    <div class="team-config">
+                        <div class="team-config-crest rival-crest" id="rival-crest-btn" title="Añadir escudo rival">
+                            <svg id="rival-crest-placeholder" viewBox="0 0 48 48" fill="none" class="rival-icon">
+                                <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                <text x="24" y="29" text-anchor="middle" fill="currentColor" font-size="18" font-weight="700" opacity="0.4">?</text>
+                            </svg>
+                            <img id="rival-crest-img" class="crest-img hidden" alt="Escudo rival">
+                        </div>
+                        <input type="file" id="rival-crest-input" accept="image/*" class="hidden">
+                        <label class="field-label">Rival</label>
+                        <input type="text" id="rival-name" placeholder="Nombre del rival" class="field-input">
+                    </div>
+                </div>
+            </div>
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Plantilla</span>
+                    </div>
+                    <button id="btn-add-player" class="btn-add">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Jugador
+                    </button>
+                </div>
+                <div id="player-list" class="player-list"></div>
+            </div>
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Convocados</span>
+                    </div>
+                    <span id="squad-count" class="starter-badge">0</span>
+                </div>
+                <div id="squad-selection" class="starter-grid"></div>
+            </div>
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <span>Titulares</span>
+                    </div>
+                    <span id="starter-count" class="starter-badge">0/5</span>
+                </div>
+                <div id="starter-selection" class="starter-grid"></div>
+            </div>
+            <button id="btn-start-match" class="btn-start" disabled>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Empezar partido
+            </button>
+            <div class="config-card reports-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        <span>Informes guardados</span>
+                    </div>
+                </div>
+                <div id="reports-list" class="reports-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="player-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3 id="modal-title">Añadir jugador</h3>
+            <div class="form-row form-row-photo">
+                <div id="photo-preview" class="photo-picker" onclick="document.getElementById('photo-file-input').click()">
+                    <svg class="photo-placeholder-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                    <span class="photo-hint">Foto</span>
+                </div>
+                <input type="file" id="photo-file-input" accept="image/*" class="hidden" onchange="handlePhotoSelect(event)">
+            </div>
+            <div class="form-row">
+                <label class="field-label">Nombre</label>
+                <input type="text" id="player-name-input" placeholder="Nombre del jugador" class="field-input">
+            </div>
+            <div class="form-row">
+                <label class="field-label">Dorsal</label>
+                <input type="number" id="player-number-input" placeholder="#" min="0" max="99" class="field-input field-input-sm">
+            </div>
+            <div class="form-row">
+                <label class="toggle-label">
+                    <span>Portero</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="player-gk-input">
+                        <span class="toggle-track"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button id="btn-modal-cancel" class="btn-ghost">Cancelar</button>
+                <button id="btn-modal-save" class="btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="match-screen" class="screen hidden">
+      <div class="landscape-left-panel">
+        <div id="match-header">
+            <div class="scoreboard">
+                <div class="sb-team sb-team-home">
+                    <img src="https://losyebenesfs.com/assets/images/escudo_yebenes.webp" alt="" class="sb-crest">
+                    <span id="my-team-label" class="sb-name">YEB</span>
+                </div>
+                <div class="sb-center">
+                    <div class="sb-scores">
+                        <span id="my-score" class="sb-score">0</span>
+                        <span class="sb-dash">:</span>
+                        <span id="rival-score" class="sb-score">0</span>
+                    </div>
+                    <div class="sb-clock-row">
+                        <button id="btn-clock-toggle" class="btn-clock" aria-label="Play/Pause">
+                            <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <svg class="icon-pause hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        </button>
+                        <span id="clock-display" class="sb-clock">20:00</span>
+                        <button id="btn-period" class="btn-period-tag">1T</button>
+                    </div>
+                </div>
+                <div class="sb-team sb-team-away">
+                    <span id="rival-team-label" class="sb-name">RIV</span>
+                    <div class="sb-crest sb-crest-rival">
+                        <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.4"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="sb-gradient-bar"></div>
+        </div>
+        <div id="court-area">
+            <div id="court-players" class="court-grid"></div>
+        </div>
+      </div>
+      <div class="landscape-right-panel">
+        <div id="rival-actions">
+            <div class="rival-label-row">
+                <span class="rival-tag">RIVAL</span>
+                <span class="rival-team-tag" id="rival-actions-label">FS Villarrubia</span>
+            </div>
+            <div class="rival-buttons-row">
+                <button class="btn-rival" data-action="rival-goal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>GOL</button>
+                <button class="btn-rival" data-action="rival-shot-on"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>A puerta</button>
+                <button class="btn-rival" data-action="rival-shot-off"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Fuera</button>
+            </div>
+        </div>
+        <div id="action-bar" class="hidden">
+            <div id="selected-player-label"></div>
+            <div class="action-grid">
+                <button class="btn-action btn-goal" data-action="goal"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></span><span class="action-text">GOL</span></button>
+                <button class="btn-action btn-assist" data-action="assist"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="action-text">ASIST</span></button>
+                <button class="btn-action btn-keypass" data-action="keyPass"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><span class="action-text">P.CLAVE</span></button>
+                <button class="btn-action btn-shot-on" data-action="shotOn"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></span><span class="action-text">T.PUERTA</span></button>
+                <button class="btn-action btn-shot-off" data-action="shotOff"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span><span class="action-text">T.FUERA</span></button>
+                <button class="btn-action btn-save" data-action="save"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="action-text">PARADA</span></button>
+                <button class="btn-action btn-foul-c" data-action="foulCommitted"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="action-text">F.COM</span></button>
+                <button class="btn-action btn-foul-r" data-action="foulReceived"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span class="action-text">F.REC</span></button>
+                <button class="btn-action btn-yellow" data-action="yellowCard"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="2" width="12" height="20" rx="2"/></svg></span><span class="action-text">AMARILLA</span></button>
+                <button class="btn-action btn-red" data-action="redCard"><span class="action-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="2" width="12" height="20" rx="2"/></svg></span><span class="action-text">ROJA</span></button>
+            </div>
+        </div>
+        <div id="bench-area">
+            <button id="btn-toggle-bench" class="btn-bench-toggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                Banquillo
+                <svg class="bench-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="bench-players" class="bench-grid hidden"></div>
+        </div>
+        <div id="history-area">
+            <button id="btn-toggle-history" class="btn-history-toggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Historial
+                <span id="history-count" class="history-badge">0</span>
+                <svg class="history-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="history-list" class="history-list hidden"></div>
+        </div>
+        <div id="match-controls">
+            <button id="btn-undo" class="btn-control"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Deshacer</button>
+            <button id="btn-end-match" class="btn-control btn-control-end"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Finalizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="reentry-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3>Sanción cumplida</h3>
+            <p class="sub-hint">Debes meter a un jugador en pista para recuperar el 5v5.</p>
+            <p id="reentry-count" class="sub-label" style="color:var(--text-dim)"></p>
+            <div id="reentry-list" class="sub-list"></div>
+        </div>
+    </div>
+
+    <div id="sub-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3>Sustitución</h3>
+            <p id="sub-out-label" class="sub-label">Sale: ---</p>
+            <p class="sub-hint">Selecciona quién entra:</p>
+            <div id="sub-bench-list" class="sub-list"></div>
+            <button id="btn-sub-cancel" class="btn-ghost" style="width:100%;margin-top:12px">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="summary-screen" class="screen hidden">
+        <div class="summary-container">
+            <div class="summary-header">
+                <div class="brand-logo brand-logo-sm">
+                    <img src="icon.svg" class="brand-icon" alt="MatchPulse" width="28" height="28">
+                    <span class="brand-name">MatchPulse</span>
+                </div>
+                <h2 class="summary-title">Informe de partido</h2>
+            </div>
+            <div id="summary-scoreboard" class="summary-score-card"></div>
+            <div id="summary-rival-stats" class="summary-rival-bar"></div>
+            <div class="summary-section">
+                <h3 class="section-title">Estadísticas individuales</h3>
+                <div id="summary-table-container" class="table-scroll"></div>
+            </div>
+            <div class="summary-section">
+                <h3 class="section-title">Registro de goles</h3>
+                <div id="goal-log-container"></div>
+            </div>
+            <div class="export-buttons">
+                <button id="btn-export-csv" class="btn-export">Exportar CSV</button>
+                <button id="btn-export-print" class="btn-export">Imprimir / PDF</button>
+                <button id="btn-new-match" class="btn-ghost btn-new-match">Nuevo partido</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h3 id="confirm-title">Confirmar</h3>
+            <p id="confirm-message"></p>
+            <div class="modal-buttons">
+                <button id="btn-confirm-no" class="btn-ghost">Cancelar</button>
+                <button id="btn-confirm-yes" class="btn-primary">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
