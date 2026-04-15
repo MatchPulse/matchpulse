@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a1a14"/>
+      <stop offset="100%" stop-color="#0a0a10"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00e5a0"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowStrong">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="ballClip">
+      <rect x="0" y="0" width="512" height="200"/>
+      <rect x="0" y="280" width="512" height="232"/>
+      <rect x="0" y="200" width="165" height="80"/>
+      <rect x="347" y="200" width="165" height="80"/>
+    </clipPath>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <line x1="256" y1="60" x2="256" y2="452" stroke="#00e5a0" stroke-width="1" opacity="0.06"/>
+  <circle cx="256" cy="240" r="50" fill="none" stroke="#00e5a0" stroke-width="1" opacity="0.06"/>
+  <g filter="glow" opacity="0.85" clip-path="url(#ballClip)">
+    <circle cx="256" cy="240" r="95" fill="none" stroke="url(#accent)" stroke-width="3"/>
+    <polygon points="256,178 286,204 274,240 238,240 226,204" fill="none" stroke="url(#accent)" stroke-width="2.2" opacity="0.5"/>
+    <line x1="256" y1="178" x2="256" y2="145" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="286" y1="204" x2="316" y2="186" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="274" y1="240" x2="300" y2="268" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="238" y1="240" x2="212" y2="268" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="226" y1="204" x2="196" y2="186" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <polygon points="256,302 286,276 274,240 238,240 226,276" fill="none" stroke="url(#accent)" stroke-width="2.2" opacity="0.5"/>
+    <line x1="256" y1="302" x2="256" y2="335" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="286" y1="276" x2="316" y2="294" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+    <line x1="226" y1="276" x2="196" y2="294" stroke="url(#accent)" stroke-width="1.8" opacity="0.35"/>
+  </g>
+  <g filter="glowStrong">
+    <polyline points="126,240 160,240 185,240 208,200 230,280 256,170 282,310 304,190 327,240 352,240 386,240" fill="none" stroke="url(#accent)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="256" y="430" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="48" fill="url(#accent)" letter-spacing="4" opacity="0.9">MATCHPULSE</text>
+</svg>
